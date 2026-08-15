@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>CrashSense AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="background-gradient"></div>
+    
+    <div class="container">
+        <div class="header-card">
+            <div class="header-top">
+                <div>
+                    <h1>🚨 CrashSense AI</h1>
+                    <p class="subtitle">Real-time Accident Detection System</p>
+                </div>
+                <div class="alert-badge" id="alertBadge">
+                    <div class="alert-indicator"></div>
+                    <span>NO ALERT</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="video-container">
+                <div class="video-frame">
+                    <img src="{{ url_for('video') }}" alt="Live Video Feed">
+                    <div class="status-indicator">
+                        <div class="status-dot"></div>
+                        <span>Live</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-panel">
+                <div class="stat-card">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-label">Status</div>
+                    <div class="stat-value" id="statusValue">Active</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⚠️</div>
+                    <div class="stat-label">Alerts</div>
+                    <div class="stat-value" id="alertCount">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🎯</div>
+                    <div class="stat-label">Accuracy</div>
+                    <div class="stat-value" id="accuracyValue">50%</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Poll crash status every 500ms
+        setInterval(async () => {
+            try {
+                const response = await fetch('/api/crash-status');
+                const data = await response.json();
+                
+                const alertBadge = document.getElementById('alertBadge');
+                const statusValue = document.getElementById('statusValue');
+                const alertCount = document.getElementById('alertCount');
+                
+                if (data.detected) {
+                    alertBadge.classList.add('alert-active');
+                    statusValue.textContent = 'CRASH DETECTED!';
+                    statusValue.style.color = '#ff5252';
+                    alertBadge.innerHTML = '<div class="alert-indicator"></div><span>⚠️ CRASH!</span>';
+                } else {
+                    alertBadge.classList.remove('alert-active');
+                    statusValue.textContent = 'Active';
+                    statusValue.style.color = '#ff5252';
+                    alertBadge.innerHTML = '<div class="alert-indicator"></div><span>NO ALERT</span>';
+                }
+                
+                alertCount.textContent = data.alert_count;
+            } catch (error) {
+                console.log('Error fetching crash status:', error);
+            }
+        }, 500);
+    </script>
+</body>
+
+</html>
