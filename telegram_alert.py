@@ -1,11 +1,19 @@
 import requests
+import os
+
+# Try to load .env if python-dotenv is available
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except Exception:
+    pass
 
 # =========================================
-# TELEGRAM CONFIG
+# TELEGRAM CONFIG (from environment)
 # =========================================
 
-BOT_TOKEN = "8654138776:AAEDMeMHRgY1NSuW8pSz4hgPVYJyt1JCNfg"
-CHAT_ID = "7410266224"
+BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
 # =========================================
 # SEND TEXT ALERT
